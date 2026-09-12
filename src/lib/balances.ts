@@ -12,6 +12,30 @@ export type SettlementSuggestion = {
   amountCents: number;
 };
 
+type SettlementRecord = {
+  from_member_id: string;
+  to_member_id: string;
+  amount: number;
+};
+
+/**
+ * Nets recorded settlements into the expense-derived balances: if A marked
+ * paying B, A's debt shrinks (net moves toward zero) and B's credit shrinks
+ * by the same amount (they've been paid back). Returns a new object.
+ */
+export function applySettlements(
+  netCents: Record<string, number>,
+  settlements: SettlementRecord[]
+): Record<string, number> {
+  const result = { ...netCents };
+  for (const s of settlements) {
+    const cents = toCents(s.amount);
+    result[s.from_member_id] = (result[s.from_member_id] ?? 0) + cents;
+    result[s.to_member_id] = (result[s.to_member_id] ?? 0) - cents;
+  }
+  return result;
+}
+
 /**
  * Net balance per member, in cents. Positive means the group owes them;
  * negative means they owe the group. Always sums to exactly zero across all

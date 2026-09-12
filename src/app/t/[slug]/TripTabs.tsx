@@ -18,6 +18,14 @@ type Expense = {
   created_at: string;
   splits: { member_id: string; share_amount: number }[];
 };
+type Settlement = {
+  id: string;
+  from_member_id: string;
+  to_member_id: string;
+  amount: number;
+  marked_by: string;
+  marked_settled_at: string;
+};
 
 export default function TripTabs({
   tripId,
@@ -27,6 +35,7 @@ export default function TripTabs({
   myMemberId,
   members,
   expenses,
+  settlements,
 }: {
   tripId: string;
   tripSlug: string;
@@ -35,6 +44,7 @@ export default function TripTabs({
   myMemberId: string;
   members: Member[];
   expenses: Expense[];
+  settlements: Settlement[];
 }) {
   const [tab, setTab] = useState<"expenses" | "balances">("expenses");
   const router = useRouter();
@@ -60,6 +70,11 @@ export default function TripTabs({
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "members", filter: `trip_id=eq.${tripId}` },
+        () => router.refresh()
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "settlements", filter: `trip_id=eq.${tripId}` },
         () => router.refresh()
       )
       .subscribe();
@@ -130,11 +145,14 @@ export default function TripTabs({
           />
         ) : (
           <BalancesView
+            tripId={tripId}
+            tripSlug={tripSlug}
             tripName={tripName}
             currency={currency}
             myMemberId={myMemberId}
             members={members}
             expenses={expenses}
+            settlements={settlements}
           />
         )}
       </div>

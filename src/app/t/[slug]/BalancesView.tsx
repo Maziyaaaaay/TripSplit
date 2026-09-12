@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
-import { computeNetCents, simplifyDebts } from "@/lib/balances";
+import { applySettlements, computeNetCents, simplifyDebts } from "@/lib/balances";
 import { formatAmount, fromCents } from "@/lib/money";
+import { markSettled, unmarkSettled } from "@/app/actions/settlements";
 
 type Member = { id: string; display_name: string };
 type Expense = {
@@ -10,19 +11,33 @@ type Expense = {
   amount: number;
   splits: { member_id: string; share_amount: number }[];
 };
+type Settlement = {
+  id: string;
+  from_member_id: string;
+  to_member_id: string;
+  amount: number;
+  marked_by: string;
+  marked_settled_at: string;
+};
 
 export default function BalancesView({
+  tripId,
+  tripSlug,
   tripName,
   currency,
   myMemberId,
   members,
   expenses,
+  settlements,
 }: {
+  tripId: string;
+  tripSlug: string;
   tripName: string;
   currency: string;
   myMemberId: string;
   members: Member[];
   expenses: Expense[];
+  settlements: Settlement[];
 }) {
   const nameById = useMemo(() => {
     const map = new Map<string, string>();
@@ -30,16 +45,20 @@ export default function BalancesView({
     return map;
   }, [members]);
 
-  const netCents = useMemo(
-    () => computeNetCents(members.map((m) => m.id), expenses),
-    [members, expenses]
-  );
+  const netCents = useMemo(() => {
+    const fromExpenses = computeNetCents(members.map((m) => m.id), expenses);
+    return applySettlements(fromExpenses, settlements);
+  }, [members, expenses, settlements]);
   const suggestions = useMemo(() => simplifyDebts(netCents), [netCents]);
 
   const myNet = netCents[myMemberId] ?? 0;
   const sortedMembers = [...members].sort((a, b) => (netCents[b.id] ?? 0) - (netCents[a.id] ?? 0));
 
   const label = (name: string) => (name === nameById.get(myMemberId) ? `${name} (you)` : name);
+
+  const recentSettlements = [...settlements]
+    .sort((a, b) => (a.marked_settled_at < b.marked_settled_at ? 1 : -1))
+    .slice(0, 5);
 
   return (
     <div className="pb-28">
@@ -93,28 +112,76 @@ export default function BalancesView({
 
       <div className="text-[13px] font-semibold text-[#6B7280] mb-2">Suggested settlements</div>
       {suggestions.length === 0 ? (
-        <div className="rounded-2xl bg-[#F7F8FA] border border-[#EEF0F3] p-6 text-center">
+        <div className="rounded-2xl bg-[#F7F8FA] border border-[#EEF0F3] p-6 text-center mb-6">
           <div className="text-[14px] font-semibold text-[#14141A]">Nothing to settle</div>
           <div className="mt-1 text-[13px] text-[#9AA1AC]">Everyone&rsquo;s even right now.</div>
         </div>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-6">
           {suggestions.map((s, i) => (
             <div
               key={i}
-              className="flex items-center justify-between rounded-2xl bg-white border border-[#EEF0F3] px-4 py-3"
+              className="flex items-center justify-between gap-3 rounded-2xl bg-white border border-[#EEF0F3] px-4 py-3"
             >
-              <div className="text-[13.5px] text-[#14141A]">
+              <div className="text-[13.5px] text-[#14141A] min-w-0">
                 <span className="font-bold">{label(nameById.get(s.fromMemberId) ?? "")}</span>
                 <span className="text-[#9AA1AC]"> owes </span>
                 <span className="font-bold">{label(nameById.get(s.toMemberId) ?? "")}</span>
+                <div className="text-[14px] font-bold text-[#14141A] mt-0.5">
+                  {formatAmount(fromCents(s.amountCents), currency)}
+                </div>
               </div>
-              <div className="text-[14px] font-bold text-[#14141A]">
-                {formatAmount(fromCents(s.amountCents), currency)}
-              </div>
+              <form
+                action={markSettled.bind(
+                  null,
+                  tripId,
+                  tripSlug,
+                  s.fromMemberId,
+                  s.toMemberId,
+                  fromCents(s.amountCents)
+                )}
+              >
+                <button
+                  type="submit"
+                  className="whitespace-nowrap rounded-full bg-[#0B0B0F] text-white text-[12.5px] font-bold px-4 py-2 cursor-pointer"
+                >
+                  Mark settled
+                </button>
+              </form>
             </div>
           ))}
         </div>
+      )}
+
+      {recentSettlements.length > 0 && (
+        <>
+          <div className="text-[13px] font-semibold text-[#6B7280] mb-2">Recently settled</div>
+          <div className="flex flex-col gap-2">
+            {recentSettlements.map((s) => (
+              <div
+                key={s.id}
+                className="flex items-center justify-between gap-3 rounded-2xl bg-white border border-[#EEF0F3] px-4 py-3"
+              >
+                <div className="text-[13.5px] text-[#14141A] min-w-0">
+                  <span className="font-bold">{label(nameById.get(s.from_member_id) ?? "")}</span>
+                  <span className="text-[#9AA1AC]"> paid </span>
+                  <span className="font-bold">{label(nameById.get(s.to_member_id) ?? "")}</span>
+                  <span className="text-[#9AA1AC]"> · {formatAmount(s.amount, currency)}</span>
+                </div>
+                {s.marked_by === myMemberId && (
+                  <form action={unmarkSettled.bind(null, s.id, tripSlug)}>
+                    <button
+                      type="submit"
+                      className="whitespace-nowrap text-[12.5px] font-semibold text-[#D64C4C] cursor-pointer"
+                    >
+                      Undo
+                    </button>
+                  </form>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
       )}
       </div>
     </div>

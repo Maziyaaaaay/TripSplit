@@ -27,6 +27,15 @@ type ExpenseRow = {
   expense_splits: { member_id: string; share_amount: number }[];
 };
 
+type SettlementRow = {
+  id: string;
+  from_member_id: string;
+  to_member_id: string;
+  amount: number;
+  marked_by: string;
+  marked_settled_at: string;
+};
+
 const AVATAR_COLORS = [
   { bg: "#FDE8CF", fg: "#B5651D" },
   { bg: "#DCEBFC", fg: "#2B6CB0" },
@@ -78,19 +87,25 @@ export default async function TripPage({
   // Once you're a member, RLS opens up the real roster + expense tables —
   // no need for the slug-scoped preview RPCs any more.
   if (myMembership) {
-    const [{ data: members }, { data: expenseRows }, { data: fullTrip }] = await Promise.all([
-      supabase
-        .from("members")
-        .select("id, display_name")
-        .eq("trip_id", trip.id)
-        .order("joined_at", { ascending: true }),
-      supabase
-        .from("expenses")
-        .select("id, payer_id, created_by, amount, description, disputed, created_at, expense_splits(member_id, share_amount)")
-        .eq("trip_id", trip.id)
-        .order("created_at", { ascending: false }),
-      supabase.from("trips").select("currency").eq("id", trip.id).single(),
-    ]);
+    const [{ data: members }, { data: expenseRows }, { data: settlementRows }, { data: fullTrip }] =
+      await Promise.all([
+        supabase
+          .from("members")
+          .select("id, display_name")
+          .eq("trip_id", trip.id)
+          .order("joined_at", { ascending: true }),
+        supabase
+          .from("expenses")
+          .select("id, payer_id, created_by, amount, description, disputed, created_at, expense_splits(member_id, share_amount)")
+          .eq("trip_id", trip.id)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("settlements")
+          .select("id, from_member_id, to_member_id, amount, marked_by, marked_settled_at")
+          .eq("trip_id", trip.id)
+          .order("marked_settled_at", { ascending: false }),
+        supabase.from("trips").select("currency").eq("id", trip.id).single(),
+      ]);
 
     const expenses = ((expenseRows as ExpenseRow[] | null) ?? []).map((e) => ({
       id: e.id,
@@ -101,6 +116,15 @@ export default async function TripPage({
       disputed: e.disputed,
       created_at: e.created_at,
       splits: e.expense_splits.map((s) => ({ member_id: s.member_id, share_amount: Number(s.share_amount) })),
+    }));
+
+    const settlements = ((settlementRows as SettlementRow[] | null) ?? []).map((s) => ({
+      id: s.id,
+      from_member_id: s.from_member_id,
+      to_member_id: s.to_member_id,
+      amount: Number(s.amount),
+      marked_by: s.marked_by,
+      marked_settled_at: s.marked_settled_at,
     }));
 
     return (
@@ -114,6 +138,7 @@ export default async function TripPage({
             myMemberId={myMembership.id}
             members={(members as Member[] | null) ?? []}
             expenses={expenses}
+            settlements={settlements}
           />
         </div>
       </div>
