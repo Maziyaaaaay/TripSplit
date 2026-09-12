@@ -44,11 +44,11 @@ export default function BalancesView({
   return (
     <div className="px-6 pb-28">
       <div className="mb-4">
-        <div className="text-[13px] font-semibold text-white/70">{tripName}</div>
-        <div className="text-[20px] font-extrabold text-white">Balances</div>
+        <div className="text-[13px] font-semibold text-[#9AA1AC]">{tripName}</div>
+        <div className="text-[20px] font-extrabold text-[#0B0B0F]">Balances</div>
       </div>
 
-      <div className="rounded-2xl bg-white p-4 mb-5 text-center shadow-[0_8px_20px_rgba(20,40,80,0.15)]">
+      <div className="rounded-2xl bg-[#F7F8FA] border border-[#EEF0F3] p-4 mb-5 text-center">
         <div className="text-[12px] font-semibold text-[#9AA1AC] uppercase tracking-wide">
           Your balance
         </div>
@@ -68,14 +68,14 @@ export default function BalancesView({
         )}
       </div>
 
-      <div className="text-[13px] font-semibold text-white/80 mb-2">Everyone&rsquo;s balance</div>
+      <div className="text-[13px] font-semibold text-[#6B7280] mb-2">Everyone&rsquo;s balance</div>
       <div className="flex flex-col gap-2 mb-6">
         {sortedMembers.map((m) => {
           const net = netCents[m.id] ?? 0;
           return (
             <div
               key={m.id}
-              className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-[0_4px_14px_rgba(20,40,80,0.1)]"
+              className="flex items-center justify-between rounded-2xl bg-white border border-[#EEF0F3] px-4 py-3"
             >
               <div className="text-[14px] font-medium text-[#14141A]">{label(m.display_name)}</div>
               <div
@@ -90,9 +90,9 @@ export default function BalancesView({
         })}
       </div>
 
-      <div className="text-[13px] font-semibold text-white/80 mb-2">Suggested settlements</div>
+      <div className="text-[13px] font-semibold text-[#6B7280] mb-2">Suggested settlements</div>
       {suggestions.length === 0 ? (
-        <div className="rounded-2xl bg-white p-6 text-center shadow-[0_8px_20px_rgba(20,40,80,0.15)]">
+        <div className="rounded-2xl bg-[#F7F8FA] border border-[#EEF0F3] p-6 text-center">
           <div className="text-[14px] font-semibold text-[#14141A]">Nothing to settle</div>
           <div className="mt-1 text-[13px] text-[#9AA1AC]">Everyone&rsquo;s even right now.</div>
         </div>
@@ -101,7 +101,7 @@ export default function BalancesView({
           {suggestions.map((s, i) => (
             <div
               key={i}
-              className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-[0_4px_14px_rgba(20,40,80,0.1)]"
+              className="flex items-center justify-between rounded-2xl bg-white border border-[#EEF0F3] px-4 py-3"
             >
               <div className="text-[13.5px] text-[#14141A]">
                 <span className="font-bold">{label(nameById.get(s.fromMemberId) ?? "")}</span>

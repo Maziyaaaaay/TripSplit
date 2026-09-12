@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+  </style>
+</helmet>
+<div style="width:390px; height:380px; position:relative; overflow:hidden; background: linear-gradient(180deg, #AEDBFF 0%, #C9E6FF 42%, #E4F3FF 100%);">
+
+  <svg width="390" height="380" viewBox="0 0 390 380" style="position:absolute; inset:0;">
+    <defs>
+      <linearGradient id="mBack" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#C3D3ED"></stop>
+        <stop offset="100%" stop-color="#A9BEE0"></stop>
+      </linearGradient>
+      <linearGradient id="mMid" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#9AAFDA"></stop>
+        <stop offset="100%" stop-color="#7C94C6"></stop>
+      </linearGradient>
+      <linearGradient id="mFront" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#6E85BC"></stop>
+        <stop offset="100%" stop-color="#526AA0"></stop>
+      </linearGradient>
+      <linearGradient id="pines" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#2C5138"></stop>
+        <stop offset="100%" stop-color="#173322"></stop>
+      </linearGradient>
+      <radialGradient id="sun2" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#FFF7E0"></stop>
+        <stop offset="60%" stop-color="#FCE2A0"></stop>
+        <stop offset="100%" stop-color="#F4C368" stop-opacity="0"></stop>
+      </radialGradient>
+    </defs>
+
+    <circle cx="90" cy="70" r="60" fill="url(#sun2)"></circle>
+    <circle cx="90" cy="70" r="22" fill="#FEF4D8"></circle>
+
+    <svg class="ts-drift-b" style="overflow:visible;" x="220" y="8">
+      <ellipse cx="30" cy="38" rx="22" ry="16" fill="#fff" opacity="0.75"></ellipse>
+      <ellipse cx="58" cy="30" rx="26" ry="19" fill="#fff" opacity="0.75"></ellipse>
+      <ellipse cx="86" cy="40" rx="18" ry="14" fill="#fff" opacity="0.75"></ellipse>
+    </svg>
+
+    <path d="M-10,190 L40,110 L90,165 L150,75 L210,150 L260,95 L320,160 L400,105 L400,380 L-10,380 Z" fill="url(#mBack)"></path>
+    <path d="M-10,220 L60,145 L120,195 L190,120 L250,185 L400,140 L400,380 L-10,380 Z" fill="url(#mMid)"></path>
+    <path d="M-10,255 L70,185 L140,235 L200,175 L280,245 L400,195 L400,380 L-10,380 Z" fill="url(#mFront)"></path>
+    <path d="M40,110 L48,124 L32,124 Z M150,75 L160,92 L140,92 Z M260,95 L268,109 L252,109 Z" fill="#F3F8FF" opacity="0.85"></path>
+
+    <path d="M-10,300 C30,278 55,292 85,270 C110,252 135,270 165,258 C195,246 220,266 255,252 C285,240 315,258 350,246 C370,240 390,244 400,240 L400,380 L-10,380 Z" fill="url(#pines)" style="filter: blur(0.4px);"></path>
+    <path d="M-10,300 C30,278 55,292 85,270 C110,252 135,270 165,258 C195,246 220,266 255,252 C285,240 315,258 350,246 C370,240 390,244 400,240" fill="none" stroke="#3E7350" stroke-width="1.5" opacity="0.6"></path>
+
+    <text x="195" y="360" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="0.3" fill="#2B4A76" font-family="Inter, sans-serif">B · Mountain &amp; Pines</text>
+  </svg>
+</div>
+</x-dc>
+</body>
+</html>

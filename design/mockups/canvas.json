@@ -1,7 +1,17 @@
 {
   "artboards": [
-    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 390, "h": 844, "title": "Join Trip", "is_interactive": true },
-    { "file": "Dashboard.dc.html", "x": 470, "y": 0, "w": 390, "h": 844, "title": "Dashboard", "is_interactive": true }
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 390, "h": 844, "title": "Join Trip", "is_interactive": true, "page": "app" },
+    { "file": "Dashboard.dc.html", "x": 470, "y": 0, "w": 390, "h": 844, "title": "Dashboard", "is_interactive": true, "page": "app" },
+    { "file": "BeachHorizon.dc.html", "x": 0, "y": 0, "w": 390, "h": 380, "title": "A. Beach & Horizon", "page": "directions" },
+    { "file": "MountainPines.dc.html", "x": 470, "y": 0, "w": 390, "h": 380, "title": "B. Mountain & Pines", "page": "directions" },
+    { "file": "FlightPath.dc.html", "x": 940, "y": 0, "w": 390, "h": 380, "title": "C. Flight Path", "page": "directions" }
   ],
-  "launch": { "view": "canvas" }
+  "annotations": [
+    { "id": "directions-note", "x": 0, "y": -80, "w": 600, "text": "Three background-motif directions for the hero/dashboard sky. Pick one (or mix elements) and I'll carry it into the real app.", "page": "directions" }
+  ],
+  "pages": [
+    { "id": "directions", "name": "Directions" },
+    { "id": "app", "name": "App" }
+  ],
+  "launch": { "view": "canvas", "page": "directions" }
 }

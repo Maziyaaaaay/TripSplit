@@ -16,17 +16,16 @@ body {
   color: var(--foreground);
 }
 
-@keyframes ts-drift-a {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(14px); }
+@keyframes ts-kenburns {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.09) translate(-1.5%, -1%); }
+  100% { transform: scale(1) translate(0, 0); }
 }
-@keyframes ts-drift-b {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(-12px); }
+.ts-hero-photo {
+  animation: ts-kenburns 26s ease-in-out infinite;
+  will-change: transform;
 }
-.ts-drift-a { animation: ts-drift-a 9s ease-in-out infinite; }
-.ts-drift-b { animation: ts-drift-b 11s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ts-drift-a, .ts-drift-b { animation: none; }
+  .ts-hero-photo { animation: none; }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ExpensesView from "./ExpensesView";
@@ -69,72 +70,48 @@ export default function TripTabs({
   }, [tripId, router]);
 
   return (
-    <div
-      className="relative flex-1 overflow-hidden"
-      style={{
-        background: "linear-gradient(160deg, #5B96DE 0%, #6FA8E8 55%, #7BB4EE 100%)",
-      }}
-    >
-      <svg
-        className="absolute opacity-25"
-        style={{ top: 0, left: -40, width: 220, filter: "blur(1.5px)" }}
-        viewBox="0 0 120 60"
-        fill="#FFFFFF"
-      >
-        <ellipse cx="30" cy="38" rx="30" ry="20" />
-        <ellipse cx="60" cy="28" rx="34" ry="24" />
-        <ellipse cx="92" cy="40" rx="26" ry="18" />
-      </svg>
-      <svg
-        className="ts-drift-a absolute opacity-60"
-        style={{ top: 18, left: -14, width: 120 }}
-        viewBox="0 0 120 60"
-        fill="#FFFFFF"
-      >
-        <ellipse cx="30" cy="38" rx="26" ry="18" />
-        <ellipse cx="58" cy="30" rx="30" ry="22" />
-        <ellipse cx="88" cy="40" rx="22" ry="16" />
-      </svg>
-      <svg
-        className="ts-drift-b absolute opacity-45"
-        style={{ top: 60, right: -20, width: 96 }}
-        viewBox="0 0 120 60"
-        fill="#FFFFFF"
-      >
-        <ellipse cx="30" cy="38" rx="22" ry="16" />
-        <ellipse cx="58" cy="30" rx="26" ry="19" />
-        <ellipse cx="86" cy="40" rx="18" ry="14" />
-      </svg>
+    <div className="flex-1 flex flex-col bg-[#F4F8FC]">
+      <div className="relative h-[210px] overflow-hidden">
+        <Image
+          src="/images/hero-trip.jpg"
+          alt=""
+          fill
+          priority
+          sizes="390px"
+          className="ts-hero-photo object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-black/5" />
 
-      <div className="relative z-10 flex items-center justify-between px-6 pt-7 pb-1">
-        <div className="flex items-center gap-2">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 12l7-9 4 5 4-5 3 9" />
-            <path d="M3 12l3 9h12l3-9" />
-          </svg>
-          <span className="font-bold text-[14px] text-white tracking-tight">TripSplit</span>
-        </div>
-        <div className="flex rounded-full bg-white/20 p-1">
-          <button
-            onClick={() => setTab("expenses")}
-            className={`px-4 py-1.5 rounded-full text-[13px] font-bold cursor-pointer transition-colors ${
-              tab === "expenses" ? "bg-white text-[#0B0B0F]" : "text-white/80"
-            }`}
-          >
-            Expenses
-          </button>
-          <button
-            onClick={() => setTab("balances")}
-            className={`px-4 py-1.5 rounded-full text-[13px] font-bold cursor-pointer transition-colors ${
-              tab === "balances" ? "bg-white text-[#0B0B0F]" : "text-white/80"
-            }`}
-          >
-            Balances
-          </button>
+        <div className="relative z-10 flex items-center justify-between px-6 pt-7">
+          <div className="flex items-center gap-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 12l7-9 4 5 4-5 3 9" />
+              <path d="M3 12l3 9h12l3-9" />
+            </svg>
+            <span className="font-bold text-[14px] text-white tracking-tight drop-shadow-sm">TripSplit</span>
+          </div>
+          <div className="flex rounded-full bg-white/20 p-1">
+            <button
+              onClick={() => setTab("expenses")}
+              className={`px-4 py-1.5 rounded-full text-[13px] font-bold cursor-pointer transition-colors ${
+                tab === "expenses" ? "bg-white text-[#0B0B0F]" : "text-white/85"
+              }`}
+            >
+              Expenses
+            </button>
+            <button
+              onClick={() => setTab("balances")}
+              className={`px-4 py-1.5 rounded-full text-[13px] font-bold cursor-pointer transition-colors ${
+                tab === "balances" ? "bg-white text-[#0B0B0F]" : "text-white/85"
+              }`}
+            >
+              Balances
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="relative z-10 pt-4">
+      <div className="relative z-10 flex-1 -mt-6 bg-white rounded-t-[28px] pt-5">
         {tab === "expenses" ? (
           <ExpensesView
             tripId={tripId}

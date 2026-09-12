@@ -46,12 +46,12 @@ export default function ExpensesView({
     <div className="px-6 pb-28">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-[13px] font-semibold text-white/70">{tripName}</div>
-          <div className="text-[20px] font-extrabold text-white">Expenses</div>
+          <div className="text-[13px] font-semibold text-[#9AA1AC]">{tripName}</div>
+          <div className="text-[20px] font-extrabold text-[#0B0B0F]">Expenses</div>
         </div>
         <button
           onClick={() => setSheet("add")}
-          className="w-11 h-11 rounded-full bg-[#0B0B0F] text-white flex items-center justify-center cursor-pointer shadow-[0_6px_16px_rgba(11,11,15,0.35)]"
+          className="w-11 h-11 rounded-full bg-[#0B0B0F] text-white flex items-center justify-center cursor-pointer shadow-[0_6px_16px_rgba(11,11,15,0.2)]"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -61,7 +61,7 @@ export default function ExpensesView({
       </div>
 
       {expenses.length === 0 ? (
-        <div className="rounded-2xl bg-white p-6 text-center shadow-[0_8px_20px_rgba(20,40,80,0.15)]">
+        <div className="rounded-2xl bg-[#F7F8FA] border border-[#EEF0F3] p-6 text-center">
           <div className="text-[14px] font-semibold text-[#14141A]">No expenses yet</div>
           <div className="mt-1 text-[13px] text-[#9AA1AC]">Add the first one for the trip.</div>
         </div>
@@ -72,7 +72,7 @@ export default function ExpensesView({
             return (
               <div
                 key={exp.id}
-                className="rounded-2xl bg-white px-4 py-3.5 shadow-[0_6px_16px_rgba(20,40,80,0.12)]"
+                className="rounded-2xl bg-white border border-[#EEF0F3] shadow-sm px-4 py-3.5"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex-1 min-w-0">
