@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    a { color: #14141A; text-decoration: none; }
+    a:hover { color: #4F8EDB; }
+    input::placeholder { color: #B7BBC2; }
+
+    @keyframes tsDriftA { 0% { transform: translateX(0); } 50% { transform: translateX(14px); } 100% { transform: translateX(0); } }
+    @keyframes tsDriftB { 0% { transform: translateX(0); } 50% { transform: translateX(-12px); } 100% { transform: translateX(0); } }
+    .ts-drift-a { animation: tsDriftA 9s ease-in-out infinite; }
+    .ts-drift-b { animation: tsDriftB 11s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) {
+      [class*="ts-drift"] { animation: none; }
+    }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; background: #FFFFFF; display: flex; flex-direction: column; position: relative; overflow: hidden;">
+
+  <div style="position:relative; overflow:hidden; background: linear-gradient(180deg, #AFD8FF 0%, #C9E6FF 30%, #E3F1FF 68%, #FFFFFF 100%);">
+
+    <svg style="position:absolute; top:6px; left:-40px; width:220px; height:auto; opacity:0.35; filter: blur(1.5px);" viewBox="0 0 120 60" fill="#FFFFFF">
+      <ellipse cx="30" cy="38" rx="30" ry="20"></ellipse>
+      <ellipse cx="60" cy="28" rx="34" ry="24"></ellipse>
+      <ellipse cx="92" cy="40" rx="26" ry="18"></ellipse>
+    </svg>
+    <svg class="ts-cloud ts-drift-a" style="position:absolute; top:28px; left:-14px; width:130px; height:auto; opacity:0.9;" viewBox="0 0 120 60" fill="#FFFFFF">
+      <ellipse cx="30" cy="38" rx="26" ry="18"></ellipse>
+      <ellipse cx="58" cy="30" rx="30" ry="22"></ellipse>
+      <ellipse cx="88" cy="40" rx="22" ry="16"></ellipse>
+    </svg>
+    <svg class="ts-cloud ts-drift-b" style="position:absolute; top:92px; right:-20px; width:104px; height:auto; opacity:0.7;" viewBox="0 0 120 60" fill="#FFFFFF">
+      <ellipse cx="30" cy="38" rx="22" ry="16"></ellipse>
+      <ellipse cx="58" cy="30" rx="26" ry="19"></ellipse>
+      <ellipse cx="86" cy="40" rx="18" ry="14"></ellipse>
+    </svg>
+    <svg class="ts-cloud ts-drift-b" style="position:absolute; top:200px; left:-30px; width:150px; height:auto; opacity:0.55;" viewBox="0 0 120 60" fill="#FFFFFF">
+      <ellipse cx="30" cy="38" rx="26" ry="18"></ellipse>
+      <ellipse cx="58" cy="30" rx="30" ry="22"></ellipse>
+      <ellipse cx="88" cy="40" rx="22" ry="16"></ellipse>
+    </svg>
+
+    <div style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; padding: 28px 24px 0 24px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14141A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12l7-9 4 5 4-5 3 9"></path>
+        <path d="M3 12l3 9h12l3-9"></path>
+      </svg>
+      <span style="font-weight:700; font-size:15px; color:#14141A; letter-spacing:-0.2px;">TripSplit</span>
+    </div>
+
+    <div style="position:relative; z-index:1; padding: 32px 24px 96px 24px;">
+      <h1 style="margin:0; font-size:34px; line-height:1.12; font-weight:800; color:#0B0B0F; letter-spacing:-0.8px;">
+        Split the bill.<br>Not the friendship.
+      </h1>
+      <p style="margin:14px 0 0 0; font-size:15px; line-height:1.5; color:#6B7280; font-weight:400;">
+        No signup. Just your name — the rest is already set up.
+      </p>
+    </div>
+  </div>
+
+  <div style="margin: 24px 24px 0 24px; padding:16px; border-radius:20px; background:#F7F8FA; border:1px solid #EEF0F3;">
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <div style="font-size:16px; font-weight:700; color:#14141A;">Goa Squad</div>
+        <div style="font-size:13px; color:#8A8F98; margin-top:2px;">5 days · 4 members already in</div>
+      </div>
+      <div style="display:flex; margin-left:8px;">
+        <div style="width:32px; height:32px; border-radius:999px; background:#FDE8CF; border:2px solid #fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#B5651D; margin-left:-8px;">M</div>
+        <div style="width:32px; height:32px; border-radius:999px; background:#DCEBFC; border:2px solid #fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#2B6CB0; margin-left:-8px;">R</div>
+        <div style="width:32px; height:32px; border-radius:999px; background:#FBDCE0; border:2px solid #fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#B5384A; margin-left:-8px;">S</div>
+        <div style="width:32px; height:32px; border-radius:999px; background:#14141A; border:2px solid #fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff; margin-left:-8px;">+1</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:8px; padding: 16px 24px 0 24px; flex-wrap:wrap;">
+    <div style="padding:7px 14px; border-radius:999px; border:1px dashed #D8DBE0; font-size:12.5px; color:#6B7280; font-weight:500;">₹18,600 spent so far</div>
+    <div style="padding:7px 14px; border-radius:999px; border:1px dashed #D8DBE0; font-size:12.5px; color:#6B7280; font-weight:500;">Ends in 2 days</div>
+  </div>
+
+  <div style="flex:1;"></div>
+
+  <sc-if value="{{showForm}}" hint-placeholder-val="{{true}}">
+    <div style="padding: 0 24px 40px 24px;">
+      <label style="font-size:13px; font-weight:600; color:#14141A; margin-bottom:8px; display:block;">Your name</label>
+      <input type="text" placeholder="e.g. Maya" value="{{name}}" onChange="{{handleNameChange}}" disabled="{{joining}}"
+        style="width:100%; height:56px; border-radius:16px; border:1.5px solid #E4E6EA; padding:0 18px; background:#fff; font-size:16px; font-weight:500; color:#14141A; font-family:inherit; outline:none;">
+
+      <button onClick="{{handleJoin}}" disabled="{{joinDisabled}}"
+        style="margin-top:16px; width:100%; height:56px; border-radius:999px; background:{{btnBg}}; border:none; color:#fff; font-size:16px; font-weight:700; font-family:inherit; cursor:{{btnCursor}};">
+        {{btnLabel}}
+      </button>
+
+      <div style="text-align:center; margin-top:18px;">
+        <a href="#" style="font-size:13.5px; font-weight:600;">Already joined this trip?</a>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{joined}}" hint-placeholder-val="{{false}}">
+    <div style="padding: 0 24px 48px 24px; text-align:center;">
+      <div style="width:56px; height:56px; border-radius:999px; background:#E9F7EE; display:flex; align-items:center; justify-content:center; margin:0 auto;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2E9D5A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"></path>
+        </svg>
+      </div>
+      <div style="font-size:19px; font-weight:800; color:#0B0B0F; margin-top:16px;">You're in, {{name}}!</div>
+      <div style="font-size:14px; color:#6B7280; margin-top:6px; line-height:1.5;">You'll land on the live trip balance next, with everyone else already on the ledger.</div>
+      <a onClick="{{handleReset}}" style="display:inline-block; margin-top:16px; font-size:13.5px; font-weight:600; cursor:pointer;">Start over</a>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script data-dc-script>
+class Component extends DCLogic {
+  state = { name: '', joining: false, joined: false };
+
+  renderVals() {
+    const name = this.state.name;
+    const joining = this.state.joining;
+    const joined = this.state.joined;
+    const canJoin = name.trim().length > 0 && !joining;
+
+    const handleNameChange = (e) => this.setState({ name: e.target.value });
+
+    const handleJoin = () => {
+      if (!canJoin) return;
+      this.setState({ joining: true });
+      setTimeout(() => this.setState({ joining: false, joined: true }), 550);
+    };
+
+    const handleReset = () => this.setState({ joined: false, joining: false, name: '' });
+
+    return {
+      name,
+      joining,
+      joined,
+      showForm: !joined,
+      joinDisabled: !canJoin,
+      btnLabel: joining ? 'Joining…' : 'Join Trip',
+      btnBg: canJoin ? '#0B0B0F' : '#C7CAD1',
+      btnCursor: canJoin ? 'pointer' : 'not-allowed',
+      handleNameChange,
+      handleJoin,
+      handleReset,
+    };
+  }
+}
+</script>
+</body>
+</html>

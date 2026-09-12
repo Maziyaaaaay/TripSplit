@@ -1,69 +1,113 @@
-import Image from "next/image";
+"use client";
+
+import { useActionState } from "react";
+import { createTrip, type CreateTripState } from "@/app/actions/trips";
+
+const initialState: CreateTripState = {};
 
 export default function Home() {
+  const [state, formAction, isPending] = useActionState(createTrip, initialState);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="flex flex-1 items-center justify-center bg-white px-6 py-10">
+      <div className="w-full max-w-sm">
+        <div className="flex items-center gap-2 mb-8">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#14141A"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+            <path d="M3 12l7-9 4 5 4-5 3 9" />
+            <path d="M3 12l3 9h12l3-9" />
+          </svg>
+          <span className="font-bold text-[15px] text-[#14141A] tracking-tight">TripSplit</span>
+        </div>
+
+        <h1 className="text-[32px] leading-[1.15] font-extrabold text-[#0B0B0F] tracking-tight">
+          Start a trip.
+          <br />
+          Share one link.
+        </h1>
+        <p className="mt-3 text-[15px] leading-relaxed text-[#6B7280]">
+          No signup. Everyone joins with just their name.
+        </p>
+
+        <form action={formAction} className="mt-8 flex flex-col gap-4">
+          <div>
+            <label className="block text-[13px] font-semibold text-[#14141A] mb-2">
+              Trip name
+            </label>
+            <input
+              name="name"
+              type="text"
+              placeholder="e.g. Goa Squad"
+              required
+              maxLength={60}
+              className="w-full h-14 rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 text-[16px] font-medium text-[#14141A] outline-none focus:border-[#4F8EDB]"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+
+          <div>
+            <label className="block text-[13px] font-semibold text-[#14141A] mb-2">
+              Destination <span className="text-[#9AA1AC] font-normal">(optional)</span>
+            </label>
+            <input
+              name="destination"
+              type="text"
+              placeholder="e.g. Goa, India"
+              maxLength={100}
+              className="w-full h-14 rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 text-[16px] font-medium text-[#14141A] outline-none focus:border-[#4F8EDB]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[13px] font-semibold text-[#14141A] mb-2">
+              Currency
+            </label>
+            <select
+              name="currency"
+              defaultValue="INR"
+              className="w-full h-14 rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 text-[16px] font-medium text-[#14141A] outline-none focus:border-[#4F8EDB] bg-white"
+            >
+              <option value="INR">₹ INR</option>
+              <option value="USD">$ USD</option>
+              <option value="EUR">€ EUR</option>
+              <option value="GBP">£ GBP</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[13px] font-semibold text-[#14141A] mb-2">
+              Your name
+            </label>
+            <input
+              name="creatorName"
+              type="text"
+              placeholder="e.g. Maya"
+              required
+              maxLength={40}
+              className="w-full h-14 rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 text-[16px] font-medium text-[#14141A] outline-none focus:border-[#4F8EDB]"
+            />
+          </div>
+
+          {state.error && (
+            <p className="text-[13.5px] font-medium text-[#D64C4C]">{state.error}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={isPending}
+            className="mt-2 h-14 w-full rounded-full bg-[#0B0B0F] text-white text-[16px] font-bold disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
           >
-            Documentation
-          </a>
-        </div>
-      </main>
+            {isPending ? "Creating…" : "Create trip"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

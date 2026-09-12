@@ -1,0 +1,287 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    a { color: #fff; text-decoration: none; }
+    input::placeholder { color: #B7BBC2; }
+  </style>
+</helmet>
+<div style="width:390px; height:844px; position:relative; overflow:hidden; background: linear-gradient(160deg, #5B96DE 0%, #6FA8E8 55%, #7BB4EE 100%); display:flex; flex-direction:column;">
+
+  <div style="display:flex; align-items:center; justify-content:space-between; padding: 28px 24px 0 24px;">
+    <div>
+      <div style="font-size:22px; font-weight:800; color:#fff; letter-spacing:-0.4px;">Goa Squad</div>
+      <div style="font-size:13px; color:rgba(255,255,255,0.75); margin-top:3px; font-weight:500;">5 members · Day 3 of 5</div>
+    </div>
+    <div style="width:44px; height:44px; border-radius:999px; background:rgba(255,255,255,0.22); display:flex; align-items:center; justify-content:center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle>
+        <line x1="8.6" y1="10.6" x2="15.4" y2="6.4"></line><line x1="8.6" y1="13.4" x2="15.4" y2="17.6"></line>
+      </svg>
+    </div>
+  </div>
+
+  <div style="display:flex; justify-content:center; margin-top:16px;">
+    <svg width="150" height="150" viewBox="0 0 150 150">
+      <circle cx="75" cy="75" r="60" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="12"></circle>
+      <circle cx="75" cy="75" r="60" fill="none" stroke="#F5A623" stroke-width="12" stroke-linecap="round"
+        stroke-dasharray="376.99" stroke-dashoffset="120.6" transform="rotate(-90 75 75)"></circle>
+      <text x="75" y="70" text-anchor="middle" font-size="26" font-weight="800" fill="#fff" font-family="Inter, sans-serif">68%</text>
+      <text x="75" y="90" text-anchor="middle" font-size="11.5" font-weight="600" fill="rgba(255,255,255,0.8)" font-family="Inter, sans-serif">settled</text>
+    </svg>
+  </div>
+
+  <div onClick="{{setBalancesTab}}" style="margin: 12px 20px 0 20px; padding:18px 20px; border-radius:22px; background:#fff; box-shadow: 0 12px 30px rgba(13,40,80,0.18); display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+    <div>
+      <div style="font-size:12px; font-weight:600; color:#9AA1AC; text-transform:uppercase; letter-spacing:0.4px;">You're owed</div>
+      <div style="font-size:22px; font-weight:800; color:#B5651D; margin-top:2px;">+₹3,200</div>
+    </div>
+    <div style="width:1px; height:36px; background:#EEF0F3;"></div>
+    <div style="text-align:right;">
+      <div style="font-size:12px; font-weight:600; color:#9AA1AC; text-transform:uppercase; letter-spacing:0.4px;">You owe</div>
+      <div style="font-size:22px; font-weight:800; color:#D64C4C; margin-top:2px;">-₹850</div>
+    </div>
+  </div>
+
+  <div style="flex:1; margin-top:18px; background:#F4F7FB; border-radius:28px 28px 0 0; padding: 22px 20px 110px 20px; overflow-y:auto;">
+    <div style="font-size:15px; font-weight:700; color:#14141A; margin-bottom:14px;">{{sectionTitle}}</div>
+
+    <sc-if value="{{isExpenses}}" hint-placeholder-val="{{true}}">
+      <sc-for list="{{items}}" as="item" hint-placeholder-count="3">
+        <div onClick="{{item.toggle}}" style="cursor:pointer; position:relative; display:flex; align-items:center; gap:12px; background:{{item.rowBg}}; border-radius:18px; padding:14px; margin-bottom:10px; box-shadow: 0 4px 14px rgba(20,30,50,0.05);">
+          <div style="width:42px; height:42px; border-radius:14px; background:{{item.iconBg}}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <sc-if value="{{item.isFood}}" hint-placeholder-val="{{true}}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{item.iconColor}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"></path><path d="M5 7v13h14V7"></path><path d="M9 12h6"></path></svg>
+            </sc-if>
+            <sc-if value="{{item.isTransport}}" hint-placeholder-val="{{false}}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{item.iconColor}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="12" rx="2"></rect><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+            </sc-if>
+            <sc-if value="{{item.isStay}}" hint-placeholder-val="{{false}}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{item.iconColor}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l6-6M21 3l-6 6M9 3H3v6M15 21h6v-6"></path></svg>
+            </sc-if>
+            <sc-if value="{{item.isOther}}" hint-placeholder-val="{{false}}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{item.iconColor}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"></path><path d="M9 9h6v6H9z"></path></svg>
+            </sc-if>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:14.5px; font-weight:700; color:#14141A;">{{item.title}}</div>
+            <div style="font-size:12.5px; color:#9AA1AC; margin-top:2px;">{{item.subtitle}}</div>
+          </div>
+          <div style="font-size:15px; font-weight:800; color:#14141A;">{{item.amount}}</div>
+          <sc-if value="{{item.disputed}}" hint-placeholder-val="{{false}}">
+            <div style="position:absolute; top:-6px; right:10px; background:#FDEAEA; color:#C0392B; font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px;">Disputed</div>
+          </sc-if>
+        </div>
+      </sc-for>
+      <div style="text-align:center; font-size:11.5px; color:#9AA1AC; margin-top:6px;">Tap an expense to flag it as disputed</div>
+    </sc-if>
+
+    <sc-if value="{{isBalances}}" hint-placeholder-val="{{false}}">
+      <sc-for list="{{balanceItems}}" as="item" hint-placeholder-count="3">
+        <div style="display:flex; align-items:center; gap:12px; background:#fff; border-radius:18px; padding:14px; margin-bottom:10px; box-shadow: 0 4px 14px rgba(20,30,50,0.05);">
+          <div style="width:38px; height:38px; border-radius:999px; background:#EEF1F5; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#14141A; flex-shrink:0;">{{item.initial}}</div>
+          <div style="flex:1;">
+            <div style="font-size:14.5px; font-weight:700; color:#14141A;">{{item.name}}</div>
+          </div>
+          <div style="font-size:15px; font-weight:800; color:{{item.amountColor}}; text-decoration:{{item.amountDecoration}}; margin-right:10px;">{{item.amount}}</div>
+          <button onClick="{{item.toggleSettle}}" style="border:none; border-radius:999px; padding:8px 14px; font-size:12px; font-weight:700; background:{{item.actionBg}}; color:{{item.actionColor}}; cursor:pointer; font-family:inherit; white-space:nowrap;">{{item.actionLabel}}</button>
+        </div>
+      </sc-for>
+    </sc-if>
+
+    <sc-if value="{{isHistory}}" hint-placeholder-val="{{false}}">
+      <div style="background:#fff; border-radius:18px; padding:26px 20px; text-align:center; box-shadow: 0 4px 14px rgba(20,30,50,0.05);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto; display:block;"><path d="M3 3v18h18"></path><path d="M18 17V9M13 17V5M8 17v-4"></path></svg>
+        <div style="font-size:14px; font-weight:700; color:#14141A; margin-top:12px;">Trip summary unlocks at the end</div>
+        <div style="font-size:12.5px; color:#9AA1AC; margin-top:4px; line-height:1.5;">Once the trip wraps, you'll get a spend breakdown and a shareable recap here.</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isShare}}" hint-placeholder-val="{{false}}">
+      <div style="background:#fff; border-radius:18px; padding:18px; box-shadow: 0 4px 14px rgba(20,30,50,0.05);">
+        <div style="font-size:12px; font-weight:600; color:#9AA1AC; text-transform:uppercase; letter-spacing:0.4px;">Trip link</div>
+        <div style="font-size:14.5px; font-weight:700; color:#14141A; margin-top:6px;">tripsplit.app/t/goa-squad</div>
+        <button onClick="{{copyLink}}" style="margin-top:14px; width:100%; height:46px; border-radius:999px; border:none; background:{{copyBg}}; color:#fff; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer;">{{copyLinkLabel}}</button>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="position:absolute; left:20px; right:20px; bottom:24px; height:64px; border-radius:999px; background:#fff; box-shadow: 0 14px 34px rgba(13,40,80,0.22); display:flex; align-items:center; justify-content:space-around; padding: 0 12px;">
+    <div onClick="{{setExpensesTab}}" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{tabExpensesColor}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+    </div>
+    <div onClick="{{setBalancesTab}}" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{tabBalancesColor}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10l-4 4 4 4"></path><path d="M3 14h13"></path><path d="M17 6l4 4-4 4"></path><path d="M21 10H8"></path></svg>
+    </div>
+
+    <div onClick="{{openAdd}}" style="width:56px; height:56px; border-radius:999px; background:#0B0B0F; display:flex; align-items:center; justify-content:center; margin-top:-32px; box-shadow: 0 10px 22px rgba(0,0,0,0.3); flex-shrink:0; cursor:pointer;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </div>
+
+    <div onClick="{{setHistoryTab}}" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{tabHistoryColor}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M18 17V9M13 17V5M8 17v-4"></path></svg>
+    </div>
+    <div onClick="{{setShareTab}}" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{tabShareColor}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.07 0l1.93-1.93a5 5 0 00-7.07-7.07L10.5 5.5"></path><path d="M14 11a5 5 0 00-7.07 0L5 12.93a5 5 0 007.07 7.07L13.5 18.5"></path></svg>
+    </div>
+  </div>
+
+  <sc-if value="{{showAddSheet}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeAdd}}" style="position:absolute; inset:0; background:rgba(10,14,20,0.45); display:flex; align-items:flex-end; z-index:5; cursor:pointer;">
+      <div onClick="{{stopClick}}" style="width:100%; background:#fff; border-radius:28px 28px 0 0; padding:20px 22px 30px 22px; cursor:default;">
+        <div style="width:40px; height:4px; background:#E4E6EA; border-radius:999px; margin:0 auto 18px auto;"></div>
+        <div style="font-size:17px; font-weight:800; color:#14141A; margin-bottom:16px;">Add expense</div>
+
+        <label style="font-size:12.5px; font-weight:600; color:#6B7280;">Amount</label>
+        <div style="display:flex; align-items:center; height:52px; border-radius:14px; border:1.5px solid #E4E6EA; padding:0 16px; margin-top:6px;">
+          <span style="font-size:15px; font-weight:700; color:#14141A; margin-right:6px;">₹</span>
+          <input type="text" inputmode="decimal" placeholder="0" value="{{newAmount}}" onChange="{{handleAmountChange}}" style="border:none; outline:none; font-size:15px; font-weight:600; color:#14141A; flex:1; font-family:inherit; background:transparent;">
+        </div>
+
+        <label style="font-size:12.5px; font-weight:600; color:#6B7280; margin-top:14px; display:block;">What was it for?</label>
+        <input type="text" placeholder="e.g. Boat trip" value="{{newDescription}}" onChange="{{handleDescriptionChange}}"
+          style="width:100%; height:52px; border-radius:14px; border:1.5px solid #E4E6EA; padding:0 16px; margin-top:6px; font-size:15px; font-weight:500; color:#14141A; font-family:inherit; outline:none;">
+
+        <button onClick="{{handleSave}}" disabled="{{saveDisabled}}" style="margin-top:20px; width:100%; height:54px; border-radius:999px; background:{{saveBg}}; border:none; color:#fff; font-size:15px; font-weight:700; font-family:inherit; cursor:{{saveCursor}};">Save expense</button>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script data-dc-script>
+class Component extends DCLogic {
+  state = {
+    activeTab: 'expenses',
+    showAddSheet: false,
+    copiedLink: false,
+    newAmount: '',
+    newDescription: '',
+    expenses: [
+      { id: 'e1', title: 'Beach shack dinner', subtitle: 'Paid by Rhea · split 4 ways', amount: '₹2,400', iconBg: '#FDEFE0', iconColor: '#B5651D', disputed: false, kind: 'food' },
+      { id: 'e2', title: 'Scooter rental', subtitle: 'Paid by Maya · split 4 ways', amount: '₹1,200', iconBg: '#DCEBFC', iconColor: '#2B6CB0', disputed: false, kind: 'transport' },
+      { id: 'e3', title: 'Hostel — night 3', subtitle: 'Paid by Sam · split 4 ways', amount: '₹3,600', iconBg: '#FBDCE0', iconColor: '#B5384A', disputed: false, kind: 'stay' },
+    ],
+    balances: [
+      { id: 'b1', name: 'Rhea', initial: 'R', amount: '+₹1,800', positive: true, settled: false },
+      { id: 'b2', name: 'Sam', initial: 'S', amount: '+₹1,400', positive: true, settled: false },
+      { id: 'b3', name: 'Kabir', initial: 'K', amount: '-₹850', positive: false, settled: false },
+    ],
+  };
+
+  renderVals() {
+    const { activeTab, showAddSheet, copiedLink, expenses, balances, newAmount, newDescription } = this.state;
+
+    const setTab = (tab) => () => this.setState({ activeTab: tab });
+
+    const items = expenses.map((exp, i) => ({
+      ...exp,
+      rowBg: exp.disputed ? '#FFF4F3' : '#ffffff',
+      isFood: exp.kind === 'food',
+      isTransport: exp.kind === 'transport',
+      isStay: exp.kind === 'stay',
+      isOther: exp.kind === 'other',
+      toggle: () => {
+        const next = [...this.state.expenses];
+        next[i] = { ...next[i], disputed: !next[i].disputed };
+        this.setState({ expenses: next });
+      },
+    }));
+
+    const balanceItems = balances.map((b, i) => ({
+      ...b,
+      amountColor: b.settled ? '#9AA1AC' : (b.positive ? '#B5651D' : '#D64C4C'),
+      amountDecoration: b.settled ? 'line-through' : 'none',
+      actionLabel: b.settled ? 'Settled' : 'Mark settled',
+      actionBg: b.settled ? '#EDEFF2' : '#0B0B0F',
+      actionColor: b.settled ? '#9AA1AC' : '#ffffff',
+      toggleSettle: () => {
+        const next = [...this.state.balances];
+        next[i] = { ...next[i], settled: !next[i].settled };
+        this.setState({ balances: next });
+      },
+    }));
+
+    const copyLink = () => {
+      this.setState({ copiedLink: true });
+      setTimeout(() => this.setState({ copiedLink: false }), 1600);
+    };
+
+    const openAdd = () => this.setState({ showAddSheet: true });
+    const closeAdd = () => this.setState({ showAddSheet: false, newAmount: '', newDescription: '' });
+    const stopClick = (e) => e.stopPropagation();
+
+    const handleAmountChange = (e) => this.setState({ newAmount: e.target.value });
+    const handleDescriptionChange = (e) => this.setState({ newDescription: e.target.value });
+
+    const canSave = newAmount.trim().length > 0 && newDescription.trim().length > 0;
+    const handleSave = () => {
+      if (!canSave) return;
+      const newExpense = {
+        id: 'e' + Date.now(),
+        title: newDescription.trim(),
+        subtitle: 'Paid by You · split 4 ways',
+        amount: '₹' + newAmount.trim(),
+        iconBg: '#EAF0FF',
+        iconColor: '#4F6FDB',
+        disputed: false,
+        kind: 'other',
+      };
+      this.setState({
+        expenses: [newExpense, ...this.state.expenses],
+        newAmount: '',
+        newDescription: '',
+        showAddSheet: false,
+        activeTab: 'expenses',
+      });
+    };
+
+    const sectionTitles = { expenses: 'Recent expenses', balances: 'Who owes what', history: 'Trip recap', share: 'Invite others' };
+
+    return {
+      items,
+      balanceItems,
+      isExpenses: activeTab === 'expenses',
+      isBalances: activeTab === 'balances',
+      isHistory: activeTab === 'history',
+      isShare: activeTab === 'share',
+      sectionTitle: sectionTitles[activeTab],
+      tabExpensesColor: activeTab === 'expenses' ? '#14141A' : '#9AA1AC',
+      tabBalancesColor: activeTab === 'balances' ? '#14141A' : '#9AA1AC',
+      tabHistoryColor: activeTab === 'history' ? '#14141A' : '#9AA1AC',
+      tabShareColor: activeTab === 'share' ? '#14141A' : '#9AA1AC',
+      setExpensesTab: setTab('expenses'),
+      setBalancesTab: setTab('balances'),
+      setHistoryTab: setTab('history'),
+      setShareTab: setTab('share'),
+      showAddSheet,
+      openAdd,
+      closeAdd,
+      stopClick,
+      copiedLink,
+      copyLinkLabel: copiedLink ? 'Copied!' : 'Copy link',
+      copyBg: copiedLink ? '#2E9D5A' : '#0B0B0F',
+      copyLink,
+      newAmount,
+      newDescription,
+      handleAmountChange,
+      handleDescriptionChange,
+      saveDisabled: !canSave,
+      saveBg: canSave ? '#0B0B0F' : '#C7CAD1',
+      saveCursor: canSave ? 'pointer' : 'not-allowed',
+      handleSave,
+    };
+  }
+}
+</script>
+</body>
+</html>
