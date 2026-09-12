@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { addExpense, deleteExpense, updateExpense } from "@/app/actions/expenses";
+import { addExpense, deleteExpense, toggleDispute, updateExpense } from "@/app/actions/expenses";
 import { formatAmount } from "@/lib/money";
 import ExpenseSheet, { type EditingExpense } from "./ExpenseSheet";
 
@@ -73,8 +73,17 @@ export default function ExpensesView({
             return (
               <div
                 key={exp.id}
-                className="rounded-2xl bg-white border border-[#EEF0F3] shadow-sm px-4 py-3.5"
+                className={`relative rounded-2xl border shadow-sm px-4 py-3.5 ${
+                  exp.disputed
+                    ? "bg-[#FFF4F3] border-[#F6D9D6]"
+                    : "bg-white border-[#EEF0F3]"
+                }`}
               >
+                {exp.disputed && (
+                  <div className="absolute -top-2 right-3 bg-[#D64C4C] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    Disputed
+                  </div>
+                )}
                 <div className="flex items-center gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="text-[14.5px] font-bold text-[#14141A] truncate">
@@ -89,29 +98,41 @@ export default function ExpensesView({
                     {formatAmount(exp.amount, currency)}
                   </div>
                 </div>
-                {isMine && (
-                  <div className="flex gap-4 mt-2.5 pt-2.5 border-t border-[#F1F3F6]">
-                    <button
-                      onClick={() =>
-                        setSheet({
-                          id: exp.id,
-                          payer_id: exp.payer_id,
-                          amount: exp.amount,
-                          description: exp.description,
-                          splits: exp.splits,
-                        })
-                      }
-                      className="text-[12.5px] font-semibold text-[#4F8EDB] cursor-pointer"
-                    >
-                      Edit
-                    </button>
-                    <form action={deleteExpense.bind(null, exp.id, tripSlug)}>
-                      <button type="submit" className="text-[12.5px] font-semibold text-[#D64C4C] cursor-pointer">
-                        Delete
+                <div className="flex items-center gap-4 mt-2.5 pt-2.5 border-t border-[#F1F3F6]">
+                  {isMine && (
+                    <>
+                      <button
+                        onClick={() =>
+                          setSheet({
+                            id: exp.id,
+                            payer_id: exp.payer_id,
+                            amount: exp.amount,
+                            description: exp.description,
+                            splits: exp.splits,
+                          })
+                        }
+                        className="text-[12.5px] font-semibold text-[#4F8EDB] cursor-pointer"
+                      >
+                        Edit
                       </button>
-                    </form>
-                  </div>
-                )}
+                      <form action={deleteExpense.bind(null, exp.id, tripSlug)}>
+                        <button type="submit" className="text-[12.5px] font-semibold text-[#D64C4C] cursor-pointer">
+                          Delete
+                        </button>
+                      </form>
+                    </>
+                  )}
+                  <form action={toggleDispute.bind(null, exp.id, tripSlug)} className="ml-auto">
+                    <button
+                      type="submit"
+                      className={`text-[12.5px] font-semibold cursor-pointer ${
+                        exp.disputed ? "text-[#9AA1AC]" : "text-[#B5651D]"
+                      }`}
+                    >
+                      {exp.disputed ? "Unflag" : "Flag as disputed"}
+                    </button>
+                  </form>
+                </div>
               </div>
             );
           })}

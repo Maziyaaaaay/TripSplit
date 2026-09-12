@@ -108,3 +108,9 @@ export async function deleteExpense(expenseId: string, tripSlug: string) {
   await supabase.rpc("delete_expense", { p_expense_id: expenseId });
   revalidatePath(`/t/${tripSlug}`);
 }
+
+export async function toggleDispute(expenseId: string, tripSlug: string) {
+  const supabase = await createClient();
+  await supabase.rpc("toggle_dispute", { p_expense_id: expenseId });
+  revalidatePath(`/t/${tripSlug}`);
+}
