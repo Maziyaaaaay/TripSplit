@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import JoinForm from "./JoinForm";
+import ExpensesView from "./ExpensesView";
 
 type TripPreview = {
   id: string;
@@ -11,6 +12,19 @@ type TripPreview = {
 };
 
 type JoinPreviewRow = { display_name: string };
+
+type Member = { id: string; display_name: string };
+
+type ExpenseRow = {
+  id: string;
+  payer_id: string;
+  created_by: string;
+  amount: number;
+  description: string;
+  disputed: boolean;
+  created_at: string;
+  expense_splits: { member_id: string; share_amount: number }[];
+};
 
 const AVATAR_COLORS = [
   { bg: "#FDE8CF", fg: "#B5651D" },
@@ -54,11 +68,56 @@ export default async function TripPage({
   const { data: myMembership } = user
     ? await supabase
         .from("members")
-        .select("display_name")
+        .select("id, display_name")
         .eq("trip_id", trip.id)
         .eq("auth_uid", user.id)
         .maybeSingle()
     : { data: null };
+
+  // Once you're a member, RLS opens up the real roster + expense tables —
+  // no need for the slug-scoped preview RPCs any more.
+  if (myMembership) {
+    const [{ data: members }, { data: expenseRows }, { data: fullTrip }] = await Promise.all([
+      supabase
+        .from("members")
+        .select("id, display_name")
+        .eq("trip_id", trip.id)
+        .order("joined_at", { ascending: true }),
+      supabase
+        .from("expenses")
+        .select("id, payer_id, created_by, amount, description, disputed, created_at, expense_splits(member_id, share_amount)")
+        .eq("trip_id", trip.id)
+        .order("created_at", { ascending: false }),
+      supabase.from("trips").select("currency").eq("id", trip.id).single(),
+    ]);
+
+    const expenses = ((expenseRows as ExpenseRow[] | null) ?? []).map((e) => ({
+      id: e.id,
+      payer_id: e.payer_id,
+      created_by: e.created_by,
+      amount: Number(e.amount),
+      description: e.description,
+      disputed: e.disputed,
+      created_at: e.created_at,
+      splits: e.expense_splits.map((s) => ({ member_id: s.member_id, share_amount: Number(s.share_amount) })),
+    }));
+
+    return (
+      <div className="flex flex-1 justify-center bg-white">
+        <div className="w-full max-w-sm flex flex-col pt-8">
+          <ExpensesView
+            tripId={trip.id}
+            tripSlug={trip.slug}
+            tripName={trip.name}
+            currency={fullTrip?.currency ?? "INR"}
+            myMemberId={myMembership.id}
+            members={(members as Member[] | null) ?? []}
+            expenses={expenses}
+          />
+        </div>
+      </div>
+    );
+  }
 
   const { data: previewNames } = await supabase.rpc("get_trip_join_preview", { p_slug: slug });
   const visibleAvatars = (previewNames as JoinPreviewRow[] | null) ?? [];
@@ -181,23 +240,7 @@ export default async function TripPage({
         <div className="flex-1" />
 
         <div className="pt-8">
-          {myMembership ? (
-            <div className="text-center px-6 pb-12">
-              <div className="mx-auto w-14 h-14 rounded-full bg-[#E9F7EE] flex items-center justify-center">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2E9D5A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 6L9 17l-5-5" />
-                </svg>
-              </div>
-              <div className="mt-4 text-[19px] font-extrabold text-[#0B0B0F]">
-                You&rsquo;re in, {myMembership.display_name}!
-              </div>
-              <div className="mt-1.5 text-[14px] text-[#6B7280] leading-relaxed">
-                Balances and expense tracking land in the next build phase.
-              </div>
-            </div>
-          ) : (
-            <JoinForm tripId={trip.id} tripSlug={trip.slug} tripName={trip.name} />
-          )}
+          <JoinForm tripId={trip.id} tripSlug={trip.slug} tripName={trip.name} />
         </div>
       </div>
     </div>
