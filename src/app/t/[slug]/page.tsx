@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import JoinForm from "./JoinForm";
-import ExpensesView from "./ExpensesView";
+import TripTabs from "./TripTabs";
 
 type TripPreview = {
   id: string;
@@ -105,7 +105,7 @@ export default async function TripPage({
     return (
       <div className="flex flex-1 justify-center bg-white">
         <div className="w-full max-w-sm flex flex-col pt-8">
-          <ExpensesView
+          <TripTabs
             tripId={trip.id}
             tripSlug={trip.slug}
             tripName={trip.name}
