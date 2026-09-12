@@ -9,35 +9,76 @@ export default function Home() {
   const [state, formAction, isPending] = useActionState(createTrip, initialState);
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-white px-6 py-10">
-      <div className="w-full max-w-sm">
-        <div className="flex items-center gap-2 mb-8">
+    <div className="flex flex-1 justify-center bg-white">
+      <div className="w-full max-w-sm flex flex-col">
+        <div
+          className="relative overflow-hidden"
+          style={{
+            background:
+              "linear-gradient(180deg, #AFD8FF 0%, #C9E6FF 30%, #E3F1FF 68%, #FFFFFF 100%)",
+          }}
+        >
           <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#14141A"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            className="absolute opacity-35"
+            style={{ top: 6, left: -40, width: 220, filter: "blur(1.5px)" }}
+            viewBox="0 0 120 60"
+            fill="#FFFFFF"
           >
-            <path d="M3 12l7-9 4 5 4-5 3 9" />
-            <path d="M3 12l3 9h12l3-9" />
+            <ellipse cx="30" cy="38" rx="30" ry="20" />
+            <ellipse cx="60" cy="28" rx="34" ry="24" />
+            <ellipse cx="92" cy="40" rx="26" ry="18" />
           </svg>
-          <span className="font-bold text-[15px] text-[#14141A] tracking-tight">TripSplit</span>
+          <svg
+            className="ts-drift-a absolute opacity-90"
+            style={{ top: 28, left: -14, width: 130 }}
+            viewBox="0 0 120 60"
+            fill="#FFFFFF"
+          >
+            <ellipse cx="30" cy="38" rx="26" ry="18" />
+            <ellipse cx="58" cy="30" rx="30" ry="22" />
+            <ellipse cx="88" cy="40" rx="22" ry="16" />
+          </svg>
+          <svg
+            className="ts-drift-b absolute opacity-70"
+            style={{ top: 92, right: -20, width: 104 }}
+            viewBox="0 0 120 60"
+            fill="#FFFFFF"
+          >
+            <ellipse cx="30" cy="38" rx="22" ry="16" />
+            <ellipse cx="58" cy="30" rx="26" ry="19" />
+            <ellipse cx="86" cy="40" rx="18" ry="14" />
+          </svg>
+
+          <div className="relative z-10 flex items-center gap-2 px-6 pt-7">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#14141A"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 12l7-9 4 5 4-5 3 9" />
+              <path d="M3 12l3 9h12l3-9" />
+            </svg>
+            <span className="font-bold text-[15px] text-[#14141A] tracking-tight">TripSplit</span>
+          </div>
+
+          <div className="relative z-10 px-6 pt-8 pb-10">
+            <h1 className="text-[32px] leading-[1.15] font-extrabold text-[#0B0B0F] tracking-tight">
+              Start a trip.
+              <br />
+              Share one link.
+            </h1>
+            <p className="mt-3 text-[15px] leading-relaxed text-[#6B7280]">
+              No signup. Everyone joins with just their name.
+            </p>
+          </div>
         </div>
 
-        <h1 className="text-[32px] leading-[1.15] font-extrabold text-[#0B0B0F] tracking-tight">
-          Start a trip.
-          <br />
-          Share one link.
-        </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-[#6B7280]">
-          No signup. Everyone joins with just their name.
-        </p>
-
-        <form action={formAction} className="mt-8 flex flex-col gap-4">
+        <form action={formAction} className="px-6 pb-10 flex flex-col gap-4">
           <div>
             <label className="block text-[13px] font-semibold text-[#14141A] mb-2">
               Trip name

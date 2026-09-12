@@ -104,7 +104,7 @@ export default async function TripPage({
 
     return (
       <div className="flex flex-1 justify-center bg-white">
-        <div className="w-full max-w-sm flex flex-col pt-8">
+        <div className="w-full max-w-sm flex flex-col">
           <TripTabs
             tripId={trip.id}
             tripSlug={trip.slug}
