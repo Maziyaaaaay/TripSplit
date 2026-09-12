@@ -12,7 +12,13 @@ export default function Home() {
   return (
     <div className="flex flex-1 justify-center bg-white">
       <div className="w-full max-w-sm flex flex-col">
-        <div className="relative h-[300px] overflow-hidden">
+        <div
+          className="relative h-[300px] overflow-hidden"
+          style={{
+            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 48%, transparent 96%)",
+            maskImage: "linear-gradient(to bottom, black 0%, black 48%, transparent 96%)",
+          }}
+        >
           <Image
             src="/images/hero-plan.jpg"
             alt=""
@@ -22,7 +28,7 @@ export default function Home() {
             className="ts-hero-photo object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/0 to-black/0" />
-          <div className="relative z-10 flex items-center gap-2 px-6 pt-7">
+          <div className="absolute top-0 inset-x-0 flex items-center gap-2 px-6 pt-7">
             <svg
               width="22"
               height="22"
@@ -42,18 +48,18 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative z-10 -mt-8 bg-white rounded-t-[28px] px-6 pt-7 pb-2">
-          <h1 className="text-[30px] leading-[1.15] font-extrabold text-[#0B0B0F] tracking-tight">
+        <div className="relative z-10 -mt-[130px] mx-6 rounded-3xl bg-white/65 backdrop-blur-xl border border-white/60 shadow-[0_12px_30px_rgba(20,40,80,0.18)] px-6 pt-6 pb-5">
+          <h1 className="text-[28px] leading-[1.15] font-extrabold text-[#0B0B0F] tracking-tight">
             Start a trip.
             <br />
             Share one link.
           </h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-[#6B7280]">
+          <p className="mt-3 text-[15px] leading-relaxed text-[#3A4150]">
             No signup. Everyone joins with just their name.
           </p>
         </div>
 
-        <form action={formAction} className="px-6 pt-6 pb-10 flex flex-col gap-4">
+        <form action={formAction} className="relative z-10 px-6 pt-5 pb-10 flex flex-col gap-4">
           <div>
             <label className="block text-[13px] font-semibold text-[#14141A] mb-2">
               Trip name

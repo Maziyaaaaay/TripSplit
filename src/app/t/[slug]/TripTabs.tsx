@@ -70,8 +70,14 @@ export default function TripTabs({
   }, [tripId, router]);
 
   return (
-    <div className="flex-1 flex flex-col bg-[#F4F8FC]">
-      <div className="relative h-[210px] overflow-hidden">
+    <div className="flex-1 flex flex-col bg-white">
+      <div
+        className="relative h-[220px] overflow-hidden"
+        style={{
+          WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 96%)",
+          maskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 96%)",
+        }}
+      >
         <Image
           src="/images/hero-trip.jpg"
           alt=""
@@ -82,7 +88,7 @@ export default function TripTabs({
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-black/5" />
 
-        <div className="relative z-10 flex items-center justify-between px-6 pt-7">
+        <div className="absolute top-0 inset-x-0 flex items-center justify-between px-6 pt-7">
           <div className="flex items-center gap-2">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 12l7-9 4 5 4-5 3 9" />
@@ -90,7 +96,7 @@ export default function TripTabs({
             </svg>
             <span className="font-bold text-[14px] text-white tracking-tight drop-shadow-sm">TripSplit</span>
           </div>
-          <div className="flex rounded-full bg-white/20 p-1">
+          <div className="flex rounded-full bg-white/25 backdrop-blur-md p-1">
             <button
               onClick={() => setTab("expenses")}
               className={`px-4 py-1.5 rounded-full text-[13px] font-bold cursor-pointer transition-colors ${
@@ -111,7 +117,7 @@ export default function TripTabs({
         </div>
       </div>
 
-      <div className="relative z-10 flex-1 -mt-6 bg-white rounded-t-[28px] pt-5">
+      <div className="relative z-10 flex-1">
         {tab === "expenses" ? (
           <ExpensesView
             tripId={tripId}

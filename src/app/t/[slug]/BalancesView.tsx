@@ -42,12 +42,13 @@ export default function BalancesView({
   const label = (name: string) => (name === nameById.get(myMemberId) ? `${name} (you)` : name);
 
   return (
-    <div className="px-6 pb-28">
-      <div className="mb-4">
-        <div className="text-[13px] font-semibold text-[#9AA1AC]">{tripName}</div>
+    <div className="pb-28">
+      <div className="relative z-10 -mt-[90px] mx-6 mb-4 rounded-3xl bg-white/65 backdrop-blur-xl border border-white/60 shadow-[0_12px_30px_rgba(20,40,80,0.18)] px-5 py-4">
+        <div className="text-[13px] font-semibold text-[#5B6472]">{tripName}</div>
         <div className="text-[20px] font-extrabold text-[#0B0B0F]">Balances</div>
       </div>
 
+      <div className="px-6">
       <div className="rounded-2xl bg-[#F7F8FA] border border-[#EEF0F3] p-4 mb-5 text-center">
         <div className="text-[12px] font-semibold text-[#9AA1AC] uppercase tracking-wide">
           Your balance
@@ -115,6 +116,7 @@ export default function BalancesView({
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }
