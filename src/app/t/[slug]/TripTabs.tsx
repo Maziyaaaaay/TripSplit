@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ExpensesView from "./ExpensesView";
 import BalancesView from "./BalancesView";
+import TripSettingsSheet from "./TripSettingsSheet";
 
 type Member = { id: string; display_name: string };
 type Expense = {
@@ -31,6 +32,8 @@ export default function TripTabs({
   tripId,
   tripSlug,
   tripName,
+  tripDestination,
+  tripEndDate,
   currency,
   myMemberId,
   members,
@@ -40,6 +43,8 @@ export default function TripTabs({
   tripId: string;
   tripSlug: string;
   tripName: string;
+  tripDestination: string | null;
+  tripEndDate: string | null;
   currency: string;
   myMemberId: string;
   members: Member[];
@@ -47,6 +52,7 @@ export default function TripTabs({
   settlements: Settlement[];
 }) {
   const [tab, setTab] = useState<"expenses" | "balances">("expenses");
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const router = useRouter();
 
   // Live updates: when anyone in the trip adds/edits/deletes an expense or a
@@ -111,22 +117,34 @@ export default function TripTabs({
             </svg>
             <span className="font-bold text-[14px] text-white tracking-tight drop-shadow-sm">TripSplit</span>
           </div>
-          <div className="flex rounded-full bg-white/25 backdrop-blur-md p-1">
+          <div className="flex items-center gap-2">
+            <div className="flex rounded-full bg-white/25 backdrop-blur-md p-1">
+              <button
+                onClick={() => setTab("expenses")}
+                className={`px-4 py-1.5 rounded-full text-[13px] font-bold cursor-pointer transition-colors ${
+                  tab === "expenses" ? "bg-white text-[#0B0B0F]" : "text-white/85"
+                }`}
+              >
+                Expenses
+              </button>
+              <button
+                onClick={() => setTab("balances")}
+                className={`px-4 py-1.5 rounded-full text-[13px] font-bold cursor-pointer transition-colors ${
+                  tab === "balances" ? "bg-white text-[#0B0B0F]" : "text-white/85"
+                }`}
+              >
+                Balances
+              </button>
+            </div>
             <button
-              onClick={() => setTab("expenses")}
-              className={`px-4 py-1.5 rounded-full text-[13px] font-bold cursor-pointer transition-colors ${
-                tab === "expenses" ? "bg-white text-[#0B0B0F]" : "text-white/85"
-              }`}
+              onClick={() => setSettingsOpen(true)}
+              aria-label="Trip settings"
+              className="w-9 h-9 shrink-0 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center cursor-pointer"
             >
-              Expenses
-            </button>
-            <button
-              onClick={() => setTab("balances")}
-              className={`px-4 py-1.5 rounded-full text-[13px] font-bold cursor-pointer transition-colors ${
-                tab === "balances" ? "bg-white text-[#0B0B0F]" : "text-white/85"
-              }`}
-            >
-              Balances
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
             </button>
           </div>
         </div>
@@ -156,6 +174,18 @@ export default function TripTabs({
           />
         )}
       </div>
+
+      {settingsOpen && (
+        <TripSettingsSheet
+          tripId={tripId}
+          tripSlug={tripSlug}
+          currency={currency}
+          name={tripName}
+          destination={tripDestination}
+          endDate={tripEndDate}
+          onClose={() => setSettingsOpen(false)}
+        />
+      )}
     </div>
   );
 }

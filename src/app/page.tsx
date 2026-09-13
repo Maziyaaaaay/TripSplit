@@ -1,13 +1,36 @@
-"use client";
-
 import Image from "next/image";
-import { useActionState } from "react";
-import { createTrip, type CreateTripState } from "@/app/actions/trips";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import CreateTripForm from "./CreateTripForm";
 
-const initialState: CreateTripState = {};
+type MyTrip = {
+  id: string;
+  slug: string;
+  name: string;
+  destination: string | null;
+  currency: string;
+};
 
-export default function Home() {
-  const [state, formAction, isPending] = useActionState(createTrip, initialState);
+export default async function Home() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let myTrips: MyTrip[] = [];
+  if (user) {
+    // RLS on trips (`members can read their own trip`) already scopes this to
+    // exactly the trips this anonymous session has joined — no separate
+    // membership join needed.
+    const { data } = await supabase
+      .from("trips")
+      .select("id, slug, name, destination, currency")
+      .order("created_at", { ascending: false });
+    myTrips = (data as MyTrip[] | null) ?? [];
+  }
+
+  const hasTrips = myTrips.length > 0;
 
   return (
     <div className="flex flex-1 justify-center bg-white">
@@ -49,86 +72,57 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 -mt-[130px] mx-6 rounded-3xl bg-white/65 backdrop-blur-xl border border-white/60 shadow-[0_12px_30px_rgba(20,40,80,0.18)] px-6 pt-6 pb-5">
-          <h1 className="text-[28px] leading-[1.15] font-extrabold text-[#0B0B0F] tracking-tight">
-            Start a trip.
-            <br />
-            Share one link.
-          </h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-[#3A4150]">
-            No signup. Everyone joins with just their name.
-          </p>
+          {hasTrips ? (
+            <>
+              <h1 className="text-[28px] leading-[1.15] font-extrabold text-[#0B0B0F] tracking-tight">
+                Welcome back.
+              </h1>
+              <p className="mt-3 text-[15px] leading-relaxed text-[#3A4150]">
+                Jump back into a trip, or start a new one below.
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-[28px] leading-[1.15] font-extrabold text-[#0B0B0F] tracking-tight">
+                Start a trip.
+                <br />
+                Share one link.
+              </h1>
+              <p className="mt-3 text-[15px] leading-relaxed text-[#3A4150]">
+                No signup. Everyone joins with just their name.
+              </p>
+            </>
+          )}
         </div>
 
-        <form action={formAction} className="relative z-10 px-6 pt-5 pb-10 flex flex-col gap-4">
-          <div>
-            <label className="block text-[13px] font-semibold text-[#14141A] mb-2">
-              Trip name
-            </label>
-            <input
-              name="name"
-              type="text"
-              placeholder="e.g. Goa Squad"
-              required
-              maxLength={60}
-              className="w-full h-14 rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 text-[16px] font-medium text-[#14141A] outline-none focus:border-[#4F8EDB]"
-            />
+        {hasTrips && (
+          <div className="relative z-10 px-6 pt-5 flex flex-col gap-2.5">
+            {myTrips.map((trip) => (
+              <Link
+                key={trip.id}
+                href={`/t/${trip.slug}`}
+                className="flex items-center justify-between gap-3 rounded-2xl bg-[#F7F8FA] border border-[#EEF0F3] px-4 py-3.5 active:bg-[#F1F3F6]"
+              >
+                <div className="min-w-0">
+                  <div className="text-[14.5px] font-bold text-[#14141A] truncate">{trip.name}</div>
+                  <div className="text-[12.5px] text-[#9AA1AC] mt-0.5 truncate">
+                    {[trip.destination, trip.currency].filter(Boolean).join(" · ")}
+                  </div>
+                </div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9AA1AC" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                  <path d="M9 6l6 6-6 6" />
+                </svg>
+              </Link>
+            ))}
           </div>
+        )}
 
-          <div>
-            <label className="block text-[13px] font-semibold text-[#14141A] mb-2">
-              Destination <span className="text-[#9AA1AC] font-normal">(optional)</span>
-            </label>
-            <input
-              name="destination"
-              type="text"
-              placeholder="e.g. Goa, India"
-              maxLength={100}
-              className="w-full h-14 rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 text-[16px] font-medium text-[#14141A] outline-none focus:border-[#4F8EDB]"
-            />
-          </div>
-
-          <div>
-            <label className="block text-[13px] font-semibold text-[#14141A] mb-2">
-              Currency
-            </label>
-            <select
-              name="currency"
-              defaultValue="INR"
-              className="w-full h-14 rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 text-[16px] font-medium text-[#14141A] outline-none focus:border-[#4F8EDB] bg-white"
-            >
-              <option value="INR">₹ INR</option>
-              <option value="USD">$ USD</option>
-              <option value="EUR">€ EUR</option>
-              <option value="GBP">£ GBP</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[13px] font-semibold text-[#14141A] mb-2">
-              Your name
-            </label>
-            <input
-              name="creatorName"
-              type="text"
-              placeholder="e.g. Maya"
-              required
-              maxLength={40}
-              className="w-full h-14 rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 text-[16px] font-medium text-[#14141A] outline-none focus:border-[#4F8EDB]"
-            />
-          </div>
-
-          {state.error && (
-            <p className="text-[13.5px] font-medium text-[#D64C4C]">{state.error}</p>
+        <div className="relative z-10 px-6 pt-6 pb-10 flex flex-col gap-4">
+          {hasTrips && (
+            <div className="text-[13px] font-semibold text-[#6B7280]">Start another trip</div>
           )}
-
-          <button
-            type="submit"
-            disabled={isPending}
-            className="mt-2 h-14 w-full rounded-full bg-[#0B0B0F] text-white text-[16px] font-bold disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
-          >
-            {isPending ? "Creating…" : "Create trip"}
-          </button>
-        </form>
+          <CreateTripForm />
+        </div>
       </div>
     </div>
   );

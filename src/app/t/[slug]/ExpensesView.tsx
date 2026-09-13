@@ -51,6 +51,7 @@ export default function ExpensesView({
         </div>
         <button
           onClick={() => setSheet("add")}
+          aria-label="Add expense"
           className="w-11 h-11 rounded-full bg-[#0B0B0F] text-white flex items-center justify-center cursor-pointer shadow-[0_6px_16px_rgba(11,11,15,0.25)]"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round">

@@ -51,6 +51,14 @@ export default function ExpenseSheet({
     if (state.success) onClose();
   }, [state.success, onClose]);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
   const selectedIds = useMemo(() => members.filter((m) => selected.has(m.id)).map((m) => m.id), [members, selected]);
   const numericAmount = Number(amount) || 0;
 

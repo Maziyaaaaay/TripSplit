@@ -134,6 +134,8 @@ export default async function TripPage({
             tripId={trip.id}
             tripSlug={trip.slug}
             tripName={trip.name}
+            tripDestination={trip.destination}
+            tripEndDate={trip.end_date}
             currency={fullTrip?.currency ?? "INR"}
             myMemberId={myMembership.id}
             members={(members as Member[] | null) ?? []}

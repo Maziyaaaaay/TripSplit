@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { makeTripSlug } from "@/lib/slug";
 
@@ -63,4 +64,36 @@ export async function createTrip(
   if (tripError || !trip) return { error: "Could not create the trip. Try again." };
 
   redirect(`/t/${trip.slug}`);
+}
+
+export type UpdateTripState = { error?: string; success?: boolean };
+
+export async function updateTrip(
+  tripId: string,
+  tripSlug: string,
+  _prevState: UpdateTripState,
+  formData: FormData
+): Promise<UpdateTripState> {
+  const name = String(formData.get("name") ?? "").trim();
+  const destination = String(formData.get("destination") ?? "").trim();
+  const endDateRaw = String(formData.get("endDate") ?? "").trim();
+
+  if (!name) return { error: "Give your trip a name." };
+  if (name.length > MAX_NAME_LENGTH)
+    return { error: `Trip name must be under ${MAX_NAME_LENGTH} characters.` };
+  if (destination.length > MAX_DESTINATION_LENGTH)
+    return { error: `Destination must be under ${MAX_DESTINATION_LENGTH} characters.` };
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("update_trip", {
+    p_trip_id: tripId,
+    p_name: name,
+    p_destination: destination || null,
+    p_end_date: endDateRaw || null,
+  });
+
+  if (error) return { error: "Could not save changes. Try again." };
+
+  revalidatePath(`/t/${tripSlug}`);
+  return { success: true };
 }
