@@ -11,6 +11,8 @@ export type EditingExpense = {
   payer_id: string;
   amount: number;
   description: string;
+  notes: string | null;
+  receiptUrl: string | null;
   splits: { member_id: string; share_amount: number }[];
 };
 
@@ -35,6 +37,9 @@ export default function ExpenseSheet({
 
   const [amount, setAmount] = useState(editing ? String(editing.amount) : "");
   const [description, setDescription] = useState(editing?.description ?? "");
+  const [notes, setNotes] = useState(editing?.notes ?? "");
+  const [removeReceipt, setRemoveReceipt] = useState(false);
+  const [newReceiptName, setNewReceiptName] = useState<string | null>(null);
   const [payerId, setPayerId] = useState(editing?.payer_id ?? myMemberId);
   const [selected, setSelected] = useState<Set<string>>(
     new Set(editing ? editing.splits.map((s) => s.member_id) : members.map((m) => m.id))
@@ -140,6 +145,72 @@ export default function ExpenseSheet({
               onChange={(e) => setDescription(e.target.value)}
               className="w-full h-[52px] rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 text-[15px] font-medium text-[#14141A] outline-none"
             />
+          </div>
+
+          <div>
+            <label className="block text-[12.5px] font-semibold text-[#6B7280] mb-1.5">
+              Notes <span className="text-[#9AA1AC] font-normal">(optional)</span>
+            </label>
+            <textarea
+              name="notes"
+              maxLength={500}
+              rows={2}
+              placeholder="Any extra detail worth remembering"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 py-3 text-[14px] font-medium text-[#14141A] outline-none focus:border-[#4F8EDB] resize-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[12.5px] font-semibold text-[#6B7280] mb-1.5">
+              Receipt <span className="text-[#9AA1AC] font-normal">(optional)</span>
+            </label>
+
+            {editing?.receiptUrl && !removeReceipt && !newReceiptName && (
+              <div className="flex items-center justify-between rounded-2xl border-[1.5px] border-[#E4E6EA] px-4 py-2.5 mb-2">
+                <a
+                  href={editing.receiptUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[13px] font-semibold text-[#4F8EDB] underline"
+                >
+                  View current receipt
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setRemoveReceipt(true)}
+                  className="text-[12.5px] font-semibold text-[#D64C4C] cursor-pointer"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+
+            {removeReceipt && (
+              <div className="flex items-center justify-between rounded-2xl border-[1.5px] border-[#F6D9D6] bg-[#FFF4F3] px-4 py-2.5 mb-2">
+                <span className="text-[12.5px] font-medium text-[#B5384A]">Receipt will be removed</span>
+                <button
+                  type="button"
+                  onClick={() => setRemoveReceipt(false)}
+                  className="text-[12.5px] font-semibold text-[#6B7280] cursor-pointer"
+                >
+                  Undo
+                </button>
+              </div>
+            )}
+
+            <input type="hidden" name="removeReceipt" value={removeReceipt ? "on" : ""} />
+            <label className="flex items-center justify-center h-[52px] rounded-2xl border-[1.5px] border-dashed border-[#D8DBE0] text-[13px] font-semibold text-[#6B7280] cursor-pointer">
+              {newReceiptName ?? "Choose an image"}
+              <input
+                type="file"
+                name="receipt"
+                accept="image/jpeg,image/png,image/webp,image/heic"
+                className="hidden"
+                onChange={(e) => setNewReceiptName(e.target.files?.[0]?.name ?? null)}
+              />
+            </label>
           </div>
 
           <div>

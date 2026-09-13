@@ -15,6 +15,8 @@ type Expense = {
   created_by: string;
   amount: number;
   description: string;
+  notes: string | null;
+  receiptUrl: string | null;
   disputed: boolean;
   created_at: string;
   splits: { member_id: string; share_amount: number }[];

@@ -12,6 +12,8 @@ type Expense = {
   created_by: string;
   amount: number;
   description: string;
+  notes: string | null;
+  receiptUrl: string | null;
   disputed: boolean;
   created_at: string;
   splits: { member_id: string; share_amount: number }[];
@@ -94,11 +96,29 @@ export default function ExpensesView({
                       Paid by {nameById.get(exp.payer_id) ?? "someone"} · split{" "}
                       {exp.splits.length} way{exp.splits.length === 1 ? "" : "s"}
                     </div>
+                    {exp.notes && (
+                      <div className="text-[12px] text-[#9AA1AC] mt-1 truncate">{exp.notes}</div>
+                    )}
                   </div>
                   <div className="text-[15px] font-extrabold text-[#14141A]">
                     {formatAmount(exp.amount, currency)}
                   </div>
                 </div>
+                {exp.receiptUrl && (
+                  <a
+                    href={exp.receiptUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center gap-1 text-[12px] font-semibold text-[#4F8EDB]"
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <circle cx="9" cy="9" r="2" />
+                      <path d="M21 15l-5-5L5 21" />
+                    </svg>
+                    View receipt
+                  </a>
+                )}
                 <div className="flex items-center gap-4 mt-2.5 pt-2.5 border-t border-[#F1F3F6]">
                   {isMine && (
                     <>
@@ -109,6 +129,8 @@ export default function ExpensesView({
                             payer_id: exp.payer_id,
                             amount: exp.amount,
                             description: exp.description,
+                            notes: exp.notes,
+                            receiptUrl: exp.receiptUrl,
                             splits: exp.splits,
                           })
                         }

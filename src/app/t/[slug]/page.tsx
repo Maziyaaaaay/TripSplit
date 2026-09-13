@@ -22,6 +22,8 @@ type ExpenseRow = {
   created_by: string;
   amount: number;
   description: string;
+  notes: string | null;
+  receipt_path: string | null;
   disputed: boolean;
   created_at: string;
   expense_splits: { member_id: string; share_amount: number }[];
@@ -96,7 +98,7 @@ export default async function TripPage({
           .order("joined_at", { ascending: true }),
         supabase
           .from("expenses")
-          .select("id, payer_id, created_by, amount, description, disputed, created_at, expense_splits(member_id, share_amount)")
+          .select("id, payer_id, created_by, amount, description, notes, receipt_path, disputed, created_at, expense_splits(member_id, share_amount)")
           .eq("trip_id", trip.id)
           .order("created_at", { ascending: false }),
         supabase
@@ -107,12 +109,27 @@ export default async function TripPage({
         supabase.from("trips").select("currency").eq("id", trip.id).single(),
       ]);
 
-    const expenses = ((expenseRows as ExpenseRow[] | null) ?? []).map((e) => ({
+    const rows = (expenseRows as ExpenseRow[] | null) ?? [];
+    const receiptPaths = rows.map((e) => e.receipt_path).filter((p): p is string => Boolean(p));
+
+    const receiptUrlByPath = new Map<string, string>();
+    if (receiptPaths.length > 0) {
+      const { data: signedUrls } = await supabase.storage
+        .from("receipts")
+        .createSignedUrls(receiptPaths, 3600);
+      signedUrls?.forEach((s) => {
+        if (s.signedUrl) receiptUrlByPath.set(s.path ?? "", s.signedUrl);
+      });
+    }
+
+    const expenses = rows.map((e) => ({
       id: e.id,
       payer_id: e.payer_id,
       created_by: e.created_by,
       amount: Number(e.amount),
       description: e.description,
+      notes: e.notes,
+      receiptUrl: e.receipt_path ? receiptUrlByPath.get(e.receipt_path) ?? null : null,
       disputed: e.disputed,
       created_at: e.created_at,
       splits: e.expense_splits.map((s) => ({ member_id: s.member_id, share_amount: Number(s.share_amount) })),
