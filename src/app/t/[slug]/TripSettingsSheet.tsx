@@ -2,8 +2,48 @@
 
 import { useActionState, useEffect } from "react";
 import { updateTrip, type UpdateTripState } from "@/app/actions/trips";
+import { removeMember, type RemoveMemberState } from "@/app/actions/members";
 
 const initialState: UpdateTripState = {};
+const initialRemoveState: RemoveMemberState = {};
+
+type Member = { id: string; display_name: string };
+
+function MemberRow({
+  tripId,
+  tripSlug,
+  member,
+  isSelf,
+}: {
+  tripId: string;
+  tripSlug: string;
+  member: Member;
+  isSelf: boolean;
+}) {
+  const boundRemove = removeMember.bind(null, tripId, tripSlug, member.id, isSelf);
+  const [state, formAction, isPending] = useActionState(boundRemove, initialRemoveState);
+
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center justify-between rounded-2xl bg-[#F7F8FA] border border-[#EEF0F3] px-4 py-3">
+        <div className="text-[14px] font-medium text-[#14141A]">
+          {member.display_name}
+          {isSelf && <span className="text-[#9AA1AC]"> (you)</span>}
+        </div>
+        <form action={formAction}>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="text-[12.5px] font-semibold text-[#D64C4C] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {isPending ? "…" : isSelf ? "Leave trip" : "Remove"}
+          </button>
+        </form>
+      </div>
+      {state.error && <p className="text-[12px] font-medium text-[#D64C4C] px-1">{state.error}</p>}
+    </div>
+  );
+}
 
 export default function TripSettingsSheet({
   tripId,
@@ -12,6 +52,8 @@ export default function TripSettingsSheet({
   name,
   destination,
   endDate,
+  members,
+  myMemberId,
   onClose,
 }: {
   tripId: string;
@@ -20,6 +62,8 @@ export default function TripSettingsSheet({
   name: string;
   destination: string | null;
   endDate: string | null;
+  members: Member[];
+  myMemberId: string;
   onClose: () => void;
 }) {
   const boundUpdate = updateTrip.bind(null, tripId, tripSlug);
@@ -106,6 +150,24 @@ export default function TripSettingsSheet({
             {isPending ? "Saving…" : "Save changes"}
           </button>
         </form>
+
+        <div className="mt-6">
+          <div className="text-[12.5px] font-semibold text-[#6B7280] mb-2">Members</div>
+          <div className="flex flex-col gap-2">
+            {members.map((m) => (
+              <MemberRow
+                key={m.id}
+                tripId={tripId}
+                tripSlug={tripSlug}
+                member={m}
+                isSelf={m.id === myMemberId}
+              />
+            ))}
+          </div>
+          <p className="mt-2 text-[12px] text-[#9AA1AC] px-1">
+            Only members with no expense or settlement history can be removed.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { applySettlements, computeNetCents, simplifyDebts } from "@/lib/balances";
 import { formatAmount, fromCents } from "@/lib/money";
+import { buildExpensesCsv, downloadCsv } from "@/lib/csv";
 import { markSettled, unmarkSettled } from "@/app/actions/settlements";
 import SpendByPayerDonut from "./SpendByPayerDonut";
 
@@ -10,6 +11,9 @@ type Member = { id: string; display_name: string };
 type Expense = {
   payer_id: string;
   amount: number;
+  description: string;
+  disputed: boolean;
+  created_at: string;
   splits: { member_id: string; share_amount: number }[];
 };
 type Settlement = {
@@ -61,11 +65,32 @@ export default function BalancesView({
     .sort((a, b) => (a.marked_settled_at < b.marked_settled_at ? 1 : -1))
     .slice(0, 5);
 
+  const handleExport = () => {
+    const csv = buildExpensesCsv(expenses, nameById, currency);
+    const safeName = tripName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    downloadCsv(`${safeName || "trip"}-expenses.csv`, csv);
+  };
+
   return (
     <div className="pb-28">
-      <div className="relative z-10 -mt-[90px] mx-6 mb-4 rounded-3xl bg-white/65 backdrop-blur-xl border border-white/60 shadow-[0_12px_30px_rgba(20,40,80,0.18)] px-5 py-4">
-        <div className="text-[13px] font-semibold text-[#5B6472]">{tripName}</div>
-        <div className="text-[20px] font-extrabold text-[#0B0B0F]">Balances</div>
+      <div className="relative z-10 -mt-[90px] mx-6 mb-4 flex items-center justify-between rounded-3xl bg-white/65 backdrop-blur-xl border border-white/60 shadow-[0_12px_30px_rgba(20,40,80,0.18)] px-5 py-4">
+        <div>
+          <div className="text-[13px] font-semibold text-[#5B6472]">{tripName}</div>
+          <div className="text-[20px] font-extrabold text-[#0B0B0F]">Balances</div>
+        </div>
+        {expenses.length > 0 && (
+          <button
+            onClick={handleExport}
+            aria-label="Export expenses as CSV"
+            className="w-11 h-11 rounded-full bg-[#0B0B0F] text-white flex items-center justify-center cursor-pointer shadow-[0_6px_16px_rgba(11,11,15,0.25)]"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 3v12" />
+              <path d="M7 10l5 5 5-5" />
+              <path d="M4 19h16" />
+            </svg>
+          </button>
+        )}
       </div>
 
       <div className="px-6">

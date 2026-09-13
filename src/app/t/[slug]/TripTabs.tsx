@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -55,10 +55,23 @@ export default function TripTabs({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const router = useRouter();
 
+  const [toasts, setToasts] = useState<{ id: string; text: string }[]>([]);
+  const membersRef = useRef(members);
+  useEffect(() => {
+    membersRef.current = members;
+  }, [members]);
+
+  const pushToast = (text: string) => {
+    const id = crypto.randomUUID();
+    setToasts((prev) => [...prev, { id, text }]);
+    setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 4000);
+  };
+
   // Live updates: when anyone in the trip adds/edits/deletes an expense or a
   // new member joins, everyone else's view refreshes without a manual
   // reload. RLS still gates these events, so only actual trip members ever
-  // receive them.
+  // receive them. INSERT events also surface a toast — skipped for your own
+  // actions, since you already know what you just did.
   useEffect(() => {
     const supabase = createClient();
     const channel = supabase
@@ -66,7 +79,16 @@ export default function TripTabs({
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "expenses", filter: `trip_id=eq.${tripId}` },
-        () => router.refresh()
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const row = payload.new as { created_by: string; description: string };
+            if (row.created_by !== myMemberId) {
+              const name = membersRef.current.find((m) => m.id === row.created_by)?.display_name ?? "Someone";
+              pushToast(`${name} added "${row.description}"`);
+            }
+          }
+          router.refresh();
+        }
       )
       .on(
         "postgres_changes",
@@ -76,22 +98,49 @@ export default function TripTabs({
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "members", filter: `trip_id=eq.${tripId}` },
-        () => router.refresh()
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const row = payload.new as { id: string; display_name: string };
+            if (row.id !== myMemberId) pushToast(`${row.display_name} joined the trip`);
+          }
+          router.refresh();
+        }
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "settlements", filter: `trip_id=eq.${tripId}` },
-        () => router.refresh()
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const row = payload.new as { marked_by: string; from_member_id: string; to_member_id: string };
+            if (row.marked_by !== myMemberId) {
+              const from = membersRef.current.find((m) => m.id === row.from_member_id)?.display_name ?? "Someone";
+              const to = membersRef.current.find((m) => m.id === row.to_member_id)?.display_name ?? "someone";
+              pushToast(`${from} paid ${to}`);
+            }
+          }
+          router.refresh();
+        }
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [tripId, router]);
+  }, [tripId, router, myMemberId]);
 
   return (
     <div className="flex-1 flex flex-col bg-white">
+      <div className="fixed top-3 inset-x-0 z-[60] flex flex-col items-center gap-2 px-6 pointer-events-none">
+        {toasts.map((t) => (
+          <div
+            key={t.id}
+            className="max-w-sm w-full bg-[#14141A] text-white text-[13px] font-semibold rounded-2xl px-4 py-3 shadow-[0_8px_24px_rgba(0,0,0,0.25)] text-center"
+          >
+            {t.text}
+          </div>
+        ))}
+      </div>
+
       <div
         className="relative h-[220px] overflow-hidden"
         style={{
@@ -183,6 +232,8 @@ export default function TripTabs({
           name={tripName}
           destination={tripDestination}
           endDate={tripEndDate}
+          members={members}
+          myMemberId={myMemberId}
           onClose={() => setSettingsOpen(false)}
         />
       )}

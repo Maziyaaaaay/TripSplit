@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
@@ -49,4 +50,28 @@ export async function joinTrip(
 
   revalidatePath(`/t/${tripSlug}`);
   return { joined: true, name };
+}
+
+export type RemoveMemberState = { error?: string };
+
+export async function removeMember(
+  tripId: string,
+  tripSlug: string,
+  memberId: string,
+  isSelf: boolean,
+  _prevState: RemoveMemberState,
+  _formData: FormData
+): Promise<RemoveMemberState> {
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("remove_member", {
+    p_trip_id: tripId,
+    p_member_id: memberId,
+  });
+
+  if (error) return { error: error.message };
+
+  if (isSelf) redirect("/");
+
+  revalidatePath(`/t/${tripSlug}`);
+  return {};
 }
