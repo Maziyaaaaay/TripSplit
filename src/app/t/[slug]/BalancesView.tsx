@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { applySettlements, computeNetCents, simplifyDebts } from "@/lib/balances";
 import { formatAmount, fromCents } from "@/lib/money";
 import { markSettled, unmarkSettled } from "@/app/actions/settlements";
+import SpendByPayerDonut from "./SpendByPayerDonut";
 
 type Member = { id: string; display_name: string };
 type Expense = {
@@ -68,6 +69,10 @@ export default function BalancesView({
       </div>
 
       <div className="px-6">
+      <div className="mb-5">
+        <SpendByPayerDonut members={members} expenses={expenses} currency={currency} />
+      </div>
+
       <div className="rounded-2xl bg-[#F7F8FA] border border-[#EEF0F3] p-4 mb-5 text-center">
         <div className="text-[12px] font-semibold text-[#9AA1AC] uppercase tracking-wide">
           Your balance

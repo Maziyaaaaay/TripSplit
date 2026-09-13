@@ -29,7 +29,7 @@ export default function JoinForm({
           You&rsquo;re in, {state.name}!
         </div>
         <div className="mt-1.5 text-[14px] text-[#6B7280] leading-relaxed">
-          Balances and expense tracking land in the next build phase.
+          Loading the trip…
         </div>
       </div>
     );
